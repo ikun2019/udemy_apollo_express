@@ -1,0 +1,23 @@
+version: '3.9'
+services:
+  api:
+    container_name: apollo_server
+    platform: linux/amd64
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    ports:
+      - 8000:8000
+      - 5555:5555
+    volumes:
+      - ./api:/app
+  client:
+    container_name: apollo_client
+    platform: linux/amd64
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    volumes:
+      - ./client:/app
