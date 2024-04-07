@@ -4,10 +4,15 @@ const { ApolloServer } = require('@apollo/server');
 const { expressMiddleware } = require('@apollo/server/express4');
 const fs = require('fs');
 const path = require('path');
+const cors = require('cors');
 
+// * Express, Http Server
 const app = express();
 const httpServer = createServer(app);
 app.use(express.json());
+
+// * routing
+app.use('/login');
 
 // * GraphQL関連ファイル
 // schema.graphqlのインポート
