@@ -7,6 +7,8 @@ const fs = require('fs');
 const path = require('path');
 const cors = require('cors');
 
+const { handleLogin, handleSignup } = require('./utils/auth');
+
 // * Express, Http Server
 const app = express();
 const httpServer = createServer(app);
@@ -16,7 +18,8 @@ app.use(express.json(), cors());
 const prisma = new PrismaClient();
 
 // * routing
-app.post('/login');
+app.post('/login', handleLogin);
+app.post('/signup', handleSignup);
 
 // * GraphQL関連ファイル
 // schema.graphqlのインポート
