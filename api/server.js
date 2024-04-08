@@ -2,6 +2,7 @@ const express = require('express');
 const { createServer } = require('http');
 const { ApolloServer } = require('@apollo/server');
 const { expressMiddleware } = require('@apollo/server/express4');
+const { PrismaClient } = require('@prisma/client');
 const fs = require('fs');
 const path = require('path');
 const cors = require('cors');
@@ -9,10 +10,13 @@ const cors = require('cors');
 // * Express, Http Server
 const app = express();
 const httpServer = createServer(app);
-app.use(express.json());
+app.use(express.json(), cors());
+
+// Prisma
+const prisma = new PrismaClient();
 
 // * routing
-app.use('/login');
+app.post('/login');
 
 // * GraphQL関連ファイル
 // schema.graphqlのインポート
@@ -28,11 +32,19 @@ const apolloServer = new ApolloServer({
   resolvers,
 });
 
+// * contextの設定
+const context = ({ req, res }) => ({
+  ...req,
+  prisma,
+});
+
 // * Serverの起動
 (async () => {
   await apolloServer.start();
   // expressアプリでgraphqlエンドポイントを指定
-  app.use('/graphql', expressMiddleware(apolloServer));
+  app.use('/graphql', expressMiddleware(apolloServer, {
+    context: context,
+  }));
   httpServer.listen({ port: 8000 }, () => {
     console.log('Server is Running');
   });
