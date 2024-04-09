@@ -15,7 +15,7 @@ services:
     container_name: apollo_client
     platform: linux/amd64
     build:
-      context: ./
+      context: ./client
       dockerfile: Dockerfile
     ports:
       - 3000:3000
