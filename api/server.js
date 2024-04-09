@@ -7,7 +7,7 @@ const fs = require('fs');
 const path = require('path');
 const cors = require('cors');
 
-const { handleLogin, handleSignup } = require('./utils/auth');
+const { handleLogin, handleSignup, authMiddleware, getUserId } = require('./utils/auth');
 
 // * Express, Http Server
 const app = express();
@@ -26,8 +26,14 @@ app.post('/signup', handleSignup);
 const typeDefs = fs.readFileSync(path.join(__dirname, './graphql/schema.graphql'), 'utf-8');
 // resolversのインポート
 const Query = require('./graphql/resolvers/Query');
+const Mutation = require('./graphql/resolvers/Mutation');
+const User = require('./graphql/resolvers/User');
+const Message = require('./graphql/resolvers/Message');
 const resolvers = {
   Query,
+  Mutation,
+  User,
+  Message,
 };
 // * Apollo Serverの初期化
 const apolloServer = new ApolloServer({
@@ -39,6 +45,7 @@ const apolloServer = new ApolloServer({
 const context = ({ req, res }) => ({
   ...req,
   prisma,
+  userId: req && req.headers.authorization ? getUserId(req) : null,
 });
 
 // * Serverの起動

@@ -1,3 +1,19 @@
 type Query {
-	greeting: String
+	messages: [Message!]
+}
+
+type Mutation {
+	createMessage(text: String!): Message
+}
+
+type Message {
+	id: ID!
+	text: String!
+	postedBy: User!
+}
+
+type User {
+	id: ID!
+	username: String!
+	messages: [Message!]!
 }
